@@ -14,36 +14,6 @@ countryInput.addEventListener(
   debounce(onCountryInput, DEBOUNCE_DELAY)
 );
 
-// function onCountryInput() {
-//   const name = countryInput.value.trim();
-//   if (name === '') {
-//     return (countryList.innerHTML = ''), (countryInfo.innerHTML = '');
-//   }
-//   fetchCountries(name)
-//     .then(countries => {
-//       countryList.innerHTML = '';
-//       countryInfo.innerHTML = '';
-//       if (countries.length === 1) {
-//         countryList.insertAdjacentHTML(
-//           'beforeend',
-//           renderCountryList(countries)
-//         );
-//         countryInfo.insertAdjacentHTML(
-//           'beforeend',
-//           renderCountryInfo(countries)
-//         );
-//       } else if (countries.length >= 10) {
-//         alertTooManyMatches();
-//       } else {
-//         countryList.insertAdjacentHTML(
-//           'beforeend',
-//           renderCountryList(countries)
-//         );
-//       }
-//     })
-//     .catch(alertWrongName);
-// }
-
 function onCountryInput() {
   const name = countryInput.value.trim();
   if (name === '') {
@@ -51,12 +21,12 @@ function onCountryInput() {
   }
   fetchCountries(name)
     .then(countries => handleCountries(countries))
-    .catch(handleError);
+    .catch(alertWrongName);
 }
 
 function handleCountries(countries) {
-  countryList.innerHTML = '';
-  countryInfo.innerHTML = '';
+  cleanMarkup(countryList);
+  cleanMarkup(countryInfo);
   if (countries.length === 1) {
     countryList.insertAdjacentHTML('beforeend', renderCountryList(countries));
     countryInfo.insertAdjacentHTML('beforeend', renderCountryInfo(countries));
@@ -100,10 +70,16 @@ function renderCountryInfo(countries) {
 
 function alertWrongName() {
   Notiflix.Notify.failure('Oops, there is no country with that name');
+  cleanMarkup(countryList);
+  cleanMarkup(countryInfo);
 }
 
 function alertTooManyMatches() {
   Notiflix.Notify.info(
     'Too many matches found. Please enter a more specific name.'
   );
+}
+
+function cleanMarkup(element) {
+  element.innerHTML = '';
 }
